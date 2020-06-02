@@ -1,0 +1,46 @@
+{
+	"info": {
+		"_postman_id": "0d8a3c25-3956-45e6-9473-6f5868b56625",
+		"name": "Final",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8000/hello",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9f4880da-098a-4ec4-a5d9-7f0ec7435765",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\":)\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/hello",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"hello"
+					]
+				},
+				"description": "Get Request & Tests to check if the Application is Running Properly"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
