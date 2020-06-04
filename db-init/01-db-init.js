@@ -1,3 +1,5 @@
+// hardcoded _ids generated using https://observablehq.com/@hugodf/mongodb-objectid-generator
+
 db.users.createIndex( { email: 1 }, { unique: true, sparse: true } )
 db.users.insertMany([
   {
