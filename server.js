@@ -1,12 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
-
+const redis = require('redis');
 const api = require('./api');
-
+const { connectToDB } = require('./lib/mongo');
 
 const app = express();
 const port = process.env.PORT || 8000;
-
+const redisHost = process.env.REDIS_HOST || 'localhost';
+const redisPort = process.env.REDIS_PORT || '6379';
 /*
  * Morgan is a popular logger.
  */
@@ -14,6 +15,96 @@ app.use(morgan('dev'));
 
 app.use(express.json());
 app.use(express.static('public'));
+
+
+
+
+const redisClient = redis.createClient(redisPort, redisHost);
+
+const rateLimitWindowMS = 60000;
+const rateLimitNumRequests = 5;
+
+
+function getUserTokenBucket(ip) {
+  return new Promise((resolve, reject) => {
+    redisClient.hgetall(ip, (err, tokenBucket) => {
+      if (err) {
+        reject(err);
+      } else {
+        if (tokenBucket) {
+          tokenBucket.tokens = parseFloat(tokenBucket.tokens);
+        } else {
+          tokenBucket = {
+            tokens: rateLimitNumRequests,
+            last: Date.now()
+          };
+        }
+        resolve(tokenBucket);
+      }
+    });
+  });
+}
+
+function saveUserTokenBucket(ip, tokenBucket) {
+  return new Promise((resolve, reject) => {
+    redisClient.hmset(ip, tokenBucket, (err, resp) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+
+function saveUserTokenBucket(ip, tokenBucket) {
+  return new Promise((resolve, reject) => {
+    redisClient.hmset(ip, tokenBucket, (err, resp) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+async function applyRateLimit(req, res, next) {
+  try {
+    const tokenBucket = await getUserTokenBucket(req.ip);
+    const timestamp = Date.now();
+    const ellapsedMilliseconds = timestamp - tokenBucket.last;
+    const newTokens = ellapsedMilliseconds *
+      (rateLimitNumRequests / rateLimitWindowMS);
+    tokenBucket.tokens += newTokens;
+    tokenBucket.tokens = Math.min(
+      tokenBucket.tokens,
+      rateLimitNumRequests
+    );
+    tokenBucket.last = timestamp;
+
+    if (tokenBucket.tokens >= 1) {
+      tokenBucket.tokens -= 1;
+      /* Save the token bucket back to Redis. */
+      await saveUserTokenBucket(req.ip, tokenBucket);
+      next();
+    } else {
+      /* Save the token bucket back to Redis. */
+      await saveUserTokenBucket(req.ip, tokenBucket);
+      res.status(429).send({
+        error: "Too many requests per minute"
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    next();
+  }
+}
+
+app.use(applyRateLimit);
+
+
 
 /*
  * All routes for the API are written in modules in the api/ directory.  The
@@ -28,6 +119,8 @@ app.use('*', function (req, res, next) {
   });
 });
 
-app.listen(port, () => {
-  console.log("== Server is running on port", port);
+connectToDB(() => {
+  app.listen(port, () => {
+    console.log("== Server is running on port", port);
+  });
 });
