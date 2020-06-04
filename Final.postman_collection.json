@@ -76,7 +76,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"Michael Scott\",\n    \"email\": \"michael.scott@example.edu\",\n    \"password\": \"hunter2\"\n}",
+					"raw": "{\n    \"name\": \"Stanley Hudson\",\n    \"email\": \"stanley.hudson@example.edu\",\n    \"role\": \"student\",\n    \"password\": \"hunter2\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
