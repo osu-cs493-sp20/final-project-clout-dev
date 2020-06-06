@@ -62,3 +62,20 @@ async function getUserByEmail(email) {
     return results[0];
 }
 exports.getUserByEmail = getUserByEmail;
+
+async function getUserById(id) {
+  console.log("Searching for id: ", id);
+  const db = getDBReference();
+  const collection = db.collection('users');
+/* db.listCollections().toArray(function(err, collInfos) {
+    // collInfos is an array of collection info objects that look like:
+    // { name: 'test', options: {} }
+    console.log(collInfos);
+});
+*/
+  const results = await collection
+      .find({ "id": id })
+      .toArray();
+    return results[0];
+}
+exports.getUserById = getUserById;

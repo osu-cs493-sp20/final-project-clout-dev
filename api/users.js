@@ -5,7 +5,7 @@ const {
   validateUser,
   UserSchema
 } = require('../models/user');
-const { generateAuthToken } = require('../lib/authentication');
+const { generateAuthToken, requireAuthentication } = require('../lib/authentication');
 
 router.post('/', async (req, res) => {
   console.log("Create a new user");
@@ -63,7 +63,8 @@ router.post('/login', async (req, res) => {
 
 });
 
-router.get('/:id', (req, res) => {
+//must be the one who they are requesting the data of
+router.get('/:id', requireAuthentication, (req, res) => {
 
   console.log("fetch data on a specific ");
 

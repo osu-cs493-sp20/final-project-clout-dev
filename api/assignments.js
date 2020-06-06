@@ -1,11 +1,11 @@
 const router = require('express').Router();
+const { generateAuthToken, requireAuthentication } = require('../lib/authentication');
 
 
 
 
-
-
-router.post('/', (req, res) => {
+//either admin or instructor of course
+router.post('/', requireAuthentication, (req, res) => {
 
   console.log("Create a new assignment");
 
@@ -19,28 +19,32 @@ router.get('/:id', (req, res) => {
 
 });
 
-router.patch('/:id', (req, res) => {
+//either admin or instructor of course
+router.patch('/:id', requireAuthentication, (req, res) => {
 
   console.log("update an assignment");
 
 
 });
 
-router.delete('/:id', (req, res) => {
+//either admin or instructor of course
+router.delete('/:id', requireAuthentication, (req, res) => {
 
   console.log("delete an assignment");
 
 
 });
 
-router.get('/:id/submissions', (req, res) => {
+//either admin or instructor of course
+router.get('/:id/submissions', requireAuthentication, (req, res) => {
 
   console.log("get all submissions for an assignment");
 
 
 });
 
-router.post('/:id/submissions', (req, res) => {
+//only the student who is submitting the assignment
+router.post('/:id/submissions', requireAuthentication, (req, res) => {
 
   console.log("submit an assignment");
 

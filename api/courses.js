@@ -1,5 +1,5 @@
 const router = require('express').Router();
-
+const { generateAuthToken, requireAuthentication } = require('../lib/authentication');
 
 
 
@@ -11,12 +11,14 @@ router.get('/', (req, res) => {
 
 });
 
-router.post('/', (req, res) => {
+//must be admin
+router.post('/', requireAuthentication, (req, res) => {
 
   console.log("Create a new Course");
 
 
 });
+
 
 router.get('/:id', (req, res) => {
 
@@ -25,44 +27,49 @@ router.get('/:id', (req, res) => {
 
 });
 
-router.patch('/:id', (req, res) => {
+//either admin or instructor of course
+router.patch('/:id', requireAuthentication, (req, res) => {
 
   console.log("Update course data");
 
 
 });
 
-router.delete('/:id', (req, res) => {
+//must be admin
+router.delete('/:id', requireAuthentication, (req, res) => {
 
   console.log("Delete a course");
 
 
 });
 
-router.get('/:id/students', (req, res) => {
+//either admin or instructor of course
+router.get('/:id/students', requireAuthentication, (req, res) => {
 
-  console.log("Create a new assignment");
-
-
-});
-
-router.post('/:id/students', (req, res) => {
-
-  console.log("Create a new assignment");
+  console.log("get a list of all students in course");
 
 
 });
 
-router.get('/:id/roster', (req, res) => {
+//either admin or instructor of course
+router.post('/:id/students', requireAuthentication, (req, res) => {
 
-  console.log("Create a new assignment");
+  console.log("update enrollment for the course");
+
+
+});
+
+//either admin or instructor of course
+router.get('/:id/roster', requireAuthentication, (req, res) => {
+
+  console.log("get a csv of all students in the course");
 
 
 });
 
 router.get('/:id/assignments', (req, res) => {
 
-  console.log("Create a new assignment");
+  console.log("get a list of all assignments in the course");
 
 
 });
