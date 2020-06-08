@@ -3,7 +3,9 @@ const { validateAgainstSchema } = require('../lib/validation');
 const {
   insertNewUser,
   validateUser,
-  UserSchema
+  UserSchema,
+  getStudentCourses,
+  getTaughtCourses
 } = require('../models/user');
 const { generateAuthToken, requireAuthentication } = require('../lib/authentication');
 
@@ -64,10 +66,35 @@ router.post('/login', async (req, res) => {
 });
 
 //must be the one who they are requesting the data of
-router.get('/:id', requireAuthentication, (req, res) => {
+router.get('/:id', requireAuthentication, async (req, res, next) => {
 
-  console.log("fetch data on a specific ");
+  if(req.user == req.params.id) {
 
+    const user = await getUserById(req.params.id);
+    if(user) {
+
+      try{
+        if(req.role =='student') {
+          const enrolledCourses = await getStudentCourses(req.params.id);
+          user.courses = enrolledCourses;
+        } else if (req.role == 'teacher') {
+          const taughtCourses = await getTaughtCourses(req.params.id);
+          user.courses = taughtCourses;
+        }
+        delete user.password;
+        res.status(200).send(user);
+      } catch (err) {
+        console.error("  -- error:", err);
+        res.status(500).send({  error: "Error logging in.  Try again later."  });
+      }
+
+    } else {
+      next();
+    }
+
+  } else {
+    res.status(403).send({error: "can not request the data of another user"});
+  }
 
 });
 

@@ -118,7 +118,6 @@ router.delete('/:id', requireAuthentication, async (req, res, next) => {
     res.status(403).send({error: "must be admin to delete a course"});
 
   }
-  console.log("Delete a course");
 
 
 });

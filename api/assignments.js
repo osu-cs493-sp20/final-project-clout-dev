@@ -1,21 +1,64 @@
 const router = require('express').Router();
 const { generateAuthToken, requireAuthentication } = require('../lib/authentication');
-
+const { validateAgainstSchema } = require('../lib/validation');
+const {
+  AssignmentSchema,
+  insertNewAssignment,
+  deleteAssignmentById
+} = require('../models/assignment');
+const {
+  getCourseDetailsById
+} = require('../models/course');
 
 
 
 //either admin or instructor of course
-router.post('/', requireAuthentication, (req, res) => {
+router.post('/', requireAuthentication, async (req, res) => {
 
-  console.log("Create a new assignment");
+  const course = await getCourseDetailsById(req.body.courseId);
+  if(course) {
 
+    if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
+
+      if(validateAgainstSchema(req.body, AssignmentSchema)) {
+        try {
+          const id = await insertNewAssignment(req.body);
+          res.status(201).send({  id: id});
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({
+            error: "Unable to insert assignment.  Please try again later."
+          });
+        }
+      } else {
+        res.status(400).send({error: "not a valid assignment object"});
+      }
+
+    } else {
+      res.status(403).send({error: "must be admin or course instructor"});
+    }
+
+  } else {
+    next(); //course does not exist so 404
+  }
 
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
 
-  console.log("get a specific assignment");
-
+  try {
+    const assignment = await getAssignmentDetailsById(req.params.id);
+    if (assignment) {
+      res.status(200).send(assignment);
+    } else {
+      next();
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({
+      error: "Unable to fetch assignment.  Please try again later."
+    });
+  }
 
 });
 
@@ -28,18 +71,67 @@ router.patch('/:id', requireAuthentication, (req, res) => {
 });
 
 //either admin or instructor of course
-router.delete('/:id', requireAuthentication, (req, res) => {
+router.delete('/:id', requireAuthentication, async (req, res) => {
 
-  console.log("delete an assignment");
+  const course = await getCourseDetailsById(req.params.id);
+  if(course) {
 
+    if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
+      try {
+        const deleteSuccessful = await deleteAssignmentById(parseInt(req.params.id));
+        res.status(204).end();
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({
+          error: "Unable to delete course.  Please try again later."
+        });
+      }
+
+    } else {
+      res.status(403).send({error: "must be admin or course instructor"});
+    }
+
+  } else {
+    next(); //course does not exist so 404
+  }
 
 });
 
 //either admin or instructor of course
-router.get('/:id/submissions', requireAuthentication, (req, res) => {
+router.get('/:id/submissions', requireAuthentication, async (req, res) => {
 
-  console.log("get all submissions for an assignment");
+  const course = await getCourseDetailsById(req.params.id);
+  if(course) {
 
+    if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
+      try {
+
+        const submissionPage = await getSubmissionPage( req.params.id,  parseInt(req.query.page) || 1  );
+        submissionPage.links = {};
+        if (submissionPage.page < submissionPage.totalPages) {
+          submissionPage.links.nextPage = `/assignments/${req.params.id}/submissions?page=${submissionPage.page + 1}`;
+          submissionPage.links.lastPage = `/assignments/${req.params.id}/submissions?page=${submissionPage.totalPages}`;
+        }
+        if (submissionPage.page > 1) {
+          submissionPage.links.prevPage = `/assignments/${req.params.id}/submissions?page=${submissionPage.page - 1}`;
+          submissionPage.links.firstPage = '/assignments/${req.params.id}/submissions?page=1';
+        }
+        res.status(200).send(submissionPage);
+
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({
+          error: "Unable to fetch submissions.  Please try again later."
+        });
+      }
+
+    } else {
+      res.status(403).send({error: "must be admin or course instructor"});
+    }
+
+  } else {
+    next(); //course does not exist so 404
+  }
 
 });
 

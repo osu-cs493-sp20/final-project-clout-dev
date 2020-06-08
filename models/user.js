@@ -79,3 +79,14 @@ async function getUserById(id) {
     return results[0];
 }
 exports.getUserById = getUserById;
+
+async function getStudentCourses(id) {
+  const a = "write me plz";
+}
+exports.getStudentCourses = getStudentCourses;
+
+
+async function getTaughtCourses(id) {
+  const a = "write me plz";
+}
+exports.getTaughtCourses = getTaughtCourses;
