@@ -1,13 +1,15 @@
 const router = require('express').Router();
 const { generateAuthToken, requireAuthentication } = require('../lib/authentication');
-const { validateAgainstSchema } = require('../lib/validation');
+const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const {
   getCoursePage,
   CourseSchema,
   insertNewCourse,
   getCourseDetailsById,
   deleteCourseById,
-  getCourseStudents
+  getCourseStudents,
+  getCourseAssignments,
+  patchCourse
 } = require('../models/course');
 
 
@@ -88,10 +90,34 @@ router.get('/:id', async (req, res, next) => {
 });
 
 //either admin or instructor of course
-router.patch('/:id', requireAuthentication, (req, res) => {
+router.patch('/:id', requireAuthentication, async (req, res, next) => {
 
-  console.log("Update course data");
+  const course = await getCourseDetailsById(req.params.id);
+  if(course) {
 
+    if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
+        try {
+          const patchData = extractValidFields(req.body, CourseSchema);
+          if(patchData){
+            patchCourse(req.params.id, patchData);
+            res.status(200).end();
+          }
+          else {
+            res.status(400).send({error: "must contain data to patch"})
+          }
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({
+            error: "Unable to patch course.  Please try again later."
+          });
+        }
+    } else {
+      res.status(403).send({error: "must be admin or course instructor"});
+    }
+
+  } else {
+    next(); //course does not exist so 404
+  }
 
 });
 
@@ -150,10 +176,31 @@ router.get('/:id/students', requireAuthentication, async (req, res, next) => {
 });
 
 //either admin or instructor of course
-router.post('/:id/students', requireAuthentication, (req, res) => {
+router.post('/:id/students', requireAuthentication, async (req, res, next) => {
 
-  console.log("update enrollment for the course");
+  const course = await getCourseDetailsById(req.params.id);
+  if(course) {
 
+    if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
+        try {
+
+          
+//do this shit
+
+
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({
+            error: "Unable to update enrollment.  Please try again later."
+          });
+        }
+    } else {
+      res.status(403).send({error: "must be admin or course instructor"});
+    }
+
+  } else {
+    next(); //course does not exist so 404
+  }
 
 });
 
@@ -168,6 +215,7 @@ router.get('/:id/roster', requireAuthentication, async (req, res) => {
           const students = await getCourseStudents(req.params.id);
 
 //Do the csv shit instead of sending the array
+
           res.status(200).send( {students: students} );
 
         } catch (err) {
@@ -186,9 +234,21 @@ router.get('/:id/roster', requireAuthentication, async (req, res) => {
 
 });
 
-router.get('/:id/assignments', (req, res) => {
+router.get('/:id/assignments', async (req, res, next) => {
 
-  console.log("get a list of all assignments in the course");
+  const course = getCourseDetailsById(req.params.id);
+  if(course) {
+    try {
+      const assignments = getCourseAssignments(req.params.id);
+      res.status(200).send(assignments);
+    } catch (err) {
+      res.status(500).send({
+        error: "Unable to update enrollment.  Please try again later."
+      });
+    }
+  } else {
+    next();
+  }
 
 
 });

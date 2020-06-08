@@ -70,3 +70,15 @@ async function getCourseStudents(id) {
   const a = "write this function";
 }
 exports.getCourseStudents = getCourseStudents;
+
+
+async function getCourseAssignments(id) {
+  const a = "write this function";
+}
+exports.getCourseAssignments = getCourseAssignments;
+
+
+async function patchCourse(id, data) {
+  const a = "write this function";
+}
+exports.patchCourse = patchCourse;

@@ -62,3 +62,8 @@ async function getSubmissionPage(courseId, page) {
   };
 }
 exports.getSubmissionPage = getSubmissionPage;
+
+async function patchAssignment(id, data) {
+  const a = "write this function";
+}
+exports.patchAssignment = patchAssignment;

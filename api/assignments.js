@@ -1,10 +1,13 @@
 const router = require('express').Router();
 const { generateAuthToken, requireAuthentication } = require('../lib/authentication');
-const { validateAgainstSchema } = require('../lib/validation');
+const { validateAgainstSchema, extractValidFields } = require('../lib/validation');
 const {
   AssignmentSchema,
   insertNewAssignment,
-  deleteAssignmentById
+  deleteAssignmentById,
+  getAssignmentDetailsById,
+  patchAssignment,
+  getSubmissionPage
 } = require('../models/assignment');
 const {
   getCourseDetailsById
@@ -63,10 +66,34 @@ router.get('/:id', async (req, res) => {
 });
 
 //either admin or instructor of course
-router.patch('/:id', requireAuthentication, (req, res) => {
+router.patch('/:id', requireAuthentication, async (req, res, next) => {
 
-  console.log("update an assignment");
+  const course = await getCourseDetailsById(req.params.id);
+  if(course) {
 
+    if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
+        try {
+          const patchData = extractValidFields(req.body, AssignmentSchema);
+          if(patchData){
+            patchAssignment(req.params.id, patchData);
+            res.status(200).end();
+          }
+          else {
+            res.status(400).send({error: "must contain data to patch"})
+          }
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({
+            error: "Unable to patch assignment.  Please try again later."
+          });
+        }
+    } else {
+      res.status(403).send({error: "must be admin or course instructor"});
+    }
+
+  } else {
+    next(); //course does not exist so 404
+  }
 
 });
 
@@ -136,10 +163,10 @@ router.get('/:id/submissions', requireAuthentication, async (req, res) => {
 });
 
 //only the student who is submitting the assignment
-router.post('/:id/submissions', requireAuthentication, (req, res) => {
+router.post('/:id/submissions', requireAuthentication, async (req, res) => {
 
   console.log("submit an assignment");
-
+//do this shit
 
 });
 
