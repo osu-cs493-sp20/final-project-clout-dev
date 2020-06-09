@@ -33,14 +33,14 @@ db.users.insertMany([
   {
     "_id": ObjectId("5ed87e0779fae4e5d30dd812"),
     "name": "Bob Vance",
-    "email": "Bob.Vance@example.edu",
+    "email": "bob.vance@example.edu",
     "role": "student",
     "password": "$2a$08$dM9ZKXoiCzs0xqg4bH3pIuc5Afr9AqRKwZnPTpueXBIvVe1MOK1eG"
   },
   {
     "_id": ObjectId("5ed87e0f05b806ac872cc522"),
     "name": "Phyllis Vance",
-    "email": "Phyllis.Vance@example.edu",
+    "email": "phyllis.vance@example.edu",
     "role": "student",
     "password": "$2a$08$RIizm5mh7nAXESMoqIaLN.rRRx6/IIaTY2fqnSxc7UBXMUpi.osB2"
   }
@@ -53,7 +53,8 @@ db.courses.insertMany([
     "number": "101",
     "title": "Intro to Quantum Computing",
     "term": "Spring 2020",
-    "instructorId": "5ed87c1aeb574b43042c65ab"
+    "instructorId": "5ed87c1aeb574b43042c65ab",
+    "enrolled": ["5ed87e0779fae4e5d30dd812","5ed87e0f05b806ac872cc522"]
   },
   {
     "_id": ObjectId("5ed8d95f46e3cd915a1bea83"),
@@ -61,35 +62,38 @@ db.courses.insertMany([
     "number": "420",
     "title": "Python for Funsies",
     "term": "Spring 2020",
-    "instructorId": "5ed87de2804989d940f81b51"
+    "instructorId": "5ed87de2804989d940f81b51",
+    "enrolled": ["5ed87e0779fae4e5d30dd812"]
   }
 ])
 db.assignments.createIndex( { course: 1 , name: 1}, { unique: true, sparse: true } )
 db.assignments.insertMany([
   {
+    "_id": ObjectId("5edf0e17ab913d59a01c3734"),
     "courseId": "5ed8d947d3b79896da3daa16",
     "title": "Quantum Computer Schematic",
     "due": "2020-12-04T11:26:19+0000",
     "points": "100"
   },
   {
+    "_id": ObjectId("5edf0e21f103a4b103d36ffa"),
     "courseId": "5ed8d947d3b79896da3daa16",
     "title": "Quantum Computer Prototype",
     "due": "2020-12-04T11:26:19+0000",
     "points": "200"
   },
   {
+    "_id": ObjectId("5edf0e272409deff7be72d9b"),
     "courseId": "5ed8d95f46e3cd915a1bea83",
     "title": "Hello World",
     "due": "2020-12-04T11:26:19+0000",
     "points": "100"
   },
   {
+    "_id": ObjectId("5edf0e2ee3438e83e3794b64"),
     "courseId": "5ed8d95f46e3cd915a1bea83",
     "title": "Basic Math",
     "due": "2020-12-04T11:26:19+0000",
     "points": "200"
   }
 ])
-
-db.submissions.createIndex( { course: 1 , name: 1, userId: 1}, { unique: true, sparse: true } )

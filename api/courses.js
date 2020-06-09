@@ -12,8 +12,6 @@ const {
   patchCourse
 } = require('../models/course');
 
-
-
 router.get('/', async (req, res) => {
 
   try {
@@ -184,7 +182,7 @@ router.post('/:id/students', requireAuthentication, async (req, res, next) => {
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
         try {
 
-          
+
 //do this shit
 
 

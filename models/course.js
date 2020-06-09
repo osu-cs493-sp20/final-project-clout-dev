@@ -1,4 +1,7 @@
-
+const { ObjectId, GridFSBucket } = require('mongodb');
+const fs = require('fs');
+const { extractValidFields } = require('../lib/validation');
+const { getDBReference } = require('../lib/mongo');
 /*
  * Schema describing required/optional fields of a business object.
  */
@@ -55,7 +58,18 @@ exports.insertNewCourse = insertNewCourse;
 
 
 async function getCourseDetailsById(id) {
-  const a = "write this function";
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  console.log("Is valid Id? ", ObjectId.isValid(id));
+  if (!ObjectId.isValid(id)) {
+    return null;
+  } else {
+    const results = await collection
+      .find({ _id: new ObjectId(id) })
+      .toArray();
+    console.log(results[0]);
+    return results[0];
+  }
 }
 exports.getCourseDetailsById = getCourseDetailsById;
 
@@ -76,6 +90,22 @@ async function getCourseAssignments(id) {
   const a = "write this function";
 }
 exports.getCourseAssignments = getCourseAssignments;
+
+//enrolled returns True or False for whether a student (by id) is enrolled in a course (by id)
+async function enrolled(studentId, courseId) {
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  if (!ObjectId.isValid(courseId)) {
+    return null;
+  } else {
+    const results = await collection
+      .find({ _id: new ObjectId(courseId) })
+      .toArray();
+    console.log("Is Enrolled:", results[0].enrolled.includes(studentId));
+    return results[0].enrolled.includes(studentId);
+  }
+}
+exports.enrolled = enrolled;
 
 
 async function patchCourse(id, data) {

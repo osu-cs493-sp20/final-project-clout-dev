@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0d8a3c25-3956-45e6-9473-6f5868b56625",
+		"_postman_id": "8cee4c59-9c17-4b2d-bff3-11326a74f613",
 		"name": "Final",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "9f4880da-098a-4ec4-a5d9-7f0ec7435765",
+						"id": "3fb96a3c-479c-4f99-afb3-29dbf43fd849",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
@@ -91,6 +91,130 @@
 					"port": "8000",
 					"path": [
 						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit Assignment (Requires Auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWQ4N2UwZjA1YjgwNmFjODcyY2M1MjIiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTU5MTY3ODgwMywiZXhwIjoxNTkxNzY1MjAzfQ.FMeS-2OFvM8AgPIIeBu-Rq7AJ0KEpV6nnWFedohz3OU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "studentId",
+							"value": "5edf0c815ee226001247f7f8",
+							"type": "text"
+						},
+						{
+							"key": "assignmentId",
+							"value": "5edf0e17ab913d59a01c3734",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/hoskinsc/Documents/cloud/final-project-clout-dev/CS 493 Final Project.docx"
+						},
+						{
+							"key": "courseId",
+							"value": "5ed8d947d3b79896da3daa16",
+							"type": "text"
+						}
+					],
+					"options": {
+						"formdata": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/assignments/:id/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments",
+						":id",
+						"submissions"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "5edf0e17ab913d59a01c3734",
+							"type": "string"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View Submissions (Requires Auth) ",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWQ4N2MxYWViNTc0YjQzMDQyYzY1YWIiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE1OTE2ODAwMzksImV4cCI6MTU5MTc2NjQzOX0.Akyd4pvaQbncYdbX4udzPUTNa5SolfpXxEbDSUPh6RE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"type": "text",
+						"value": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [],
+					"options": {
+						"formdata": {}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/assignments/:id/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments",
+						":id",
+						"submissions"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "5edf0e17ab913d59a01c3734",
+							"type": "string"
+						}
 					]
 				}
 			},
