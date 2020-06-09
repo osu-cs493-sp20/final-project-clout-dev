@@ -112,3 +112,13 @@ async function patchCourse(id, data) {
   const a = "write this function";
 }
 exports.patchCourse = patchCourse;
+
+async function enrollStudent(studentId, courseId) {
+  const a = "write this function";
+}
+exports.enrollStudent = enrollStudent;
+
+async function disenrollStudent(studentId, courseId) {
+  const a = "write this function";
+}
+exports.disenrollStudent = disenrollStudent;

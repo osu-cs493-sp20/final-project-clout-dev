@@ -9,7 +9,9 @@ const {
   deleteCourseById,
   getCourseStudents,
   getCourseAssignments,
-  patchCourse
+  patchCourse,
+  enrollStudent,
+  disenrollStudent
 } = require('../models/course');
 
 router.get('/', async (req, res) => {
@@ -182,10 +184,18 @@ router.post('/:id/students', requireAuthentication, async (req, res, next) => {
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
         try {
 
-
-//do this shit
-
-
+          //add and remove enrollments one at a time
+          if(req.body.add) {
+            req.body.add.forEach(async function(add) {
+              await enrollStudent(add, req.params.id);
+            });
+          }
+          if(req.body.remove) {
+            req.body.remove.forEach(async function(remove) {
+              await enrollStudent(remove, req.params.id);
+            });
+          }
+          res.status(200).end();
         } catch (err) {
           console.error(err);
           res.status(500).send({
@@ -212,9 +222,13 @@ router.get('/:id/roster', requireAuthentication, async (req, res) => {
         try {
           const students = await getCourseStudents(req.params.id);
 
-//Do the csv shit instead of sending the array
+          var response = "";
+          students.forEach( async function(students) {
+            thisStudent = await getUserById(students);
+            response += thisStudent._id + ", " + thisStudent.name + ", " + thisStudent.email + "\n";
+          });
 
-          res.status(200).send( {students: students} );
+          res.status(200).send(response);
 
         } catch (err) {
           console.error(err);
