@@ -10,7 +10,7 @@ const CourseSchema = {
   number: { required: true },
   title: { required: true },
   term: { required: true },
-  instructor: { required: true }
+  instructorId: { required: true }
 };
 exports.CourseSchema = CourseSchema;
 
@@ -158,7 +158,7 @@ async function patchCourse(id, data) {
       const collection = db.collection('courses');
       const result = await collection.updateOne(
         {_id: new ObjectId(id)},
-        {$set : {"subject" : data.subject, "number" : data.number, "title" : data.title, "term" : data.term, "instructorId" : data.instructor}}
+        {$set : {"subject" : data.subject, "number" : data.number, "title" : data.title, "term" : data.term, "instructorId" : data.instructorId}}
       );
       return id;
     }
@@ -195,7 +195,7 @@ async function disenrollStudent(studentId, courseId) {
   if(ObjectId.isValid(courseId))
   {
     const result = await collection.updateOne(
-			{ "id": courseID },
+			{ "id": courseId },
 			{ $pull: { "enrolled": { $in: studentId } } }
 		);
     return courseId;

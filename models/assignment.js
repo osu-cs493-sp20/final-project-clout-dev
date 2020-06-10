@@ -7,7 +7,7 @@ const { getDBReference } = require('../lib/mongo');
  * Schema describing required/optional fields of a business object.
  */
 const AssignmentSchema = {
-  course: { required: true },
+  courseId: { required: true },
   title: { required: true },
   points: { required: true },
   due: { required: true }
