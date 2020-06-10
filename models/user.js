@@ -86,7 +86,14 @@ async function getStudentCourses(id) {
   const studentsClasses = [];
   if(ObjectId.isValid(id))
   {
+    const results = await collection
+      .find({"enrollment" : id}).toArray();
     
+    for(var i = 0; i < results.length; i++)
+    {
+      studentsClasses.push(results[i]._id);
+    }  
+    return studentsClasses;
   }
   else
   {
