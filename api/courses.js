@@ -192,7 +192,7 @@ router.post('/:id/students', requireAuthentication, async (req, res, next) => {
           }
           if(req.body.remove) {
             req.body.remove.forEach(async function(remove) {
-              await enrollStudent(remove, req.params.id);
+              await disenrollStudent(remove, req.params.id);
             });
           }
           res.status(200).end();
