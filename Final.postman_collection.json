@@ -258,7 +258,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "  {\r\n    \"subject\": \"ART\",\r\n    \"number\": \"001\",\r\n    \"title\": \"Intro to Pencils\",\r\n    \"term\": \"Summer 2020\",\r\n    \"instructor\": \"5ed87defc1f3893ea1579827\"\r\n  }",
+							"raw": "  {\r\n    \"subject\": \"ART\",\r\n    \"number\": \"001\",\r\n    \"title\": \"Intro to Pencils\",\r\n    \"term\": \"Summer 2020\",\r\n    \"instructorId\": \"5ed87defc1f3893ea1579827\"\r\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -471,7 +471,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWQ4N2MxYWViNTc0YjQzMDQyYzY1YWIiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE1OTE3NzA5NjUsImV4cCI6MTU5MTg1NzM2NX0.j-KO7Z_33QlyFwy_R9M4A1fu1ZNcjHPjFDf3675AQBo",
 									"type": "string"
 								}
 							]
@@ -492,7 +492,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "5ed8d947d3b79896da3daa16"
 								}
 							]
 						}
@@ -548,7 +548,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "  {\r\n    \"course\": \"5ed8d947d3b79896da3daa16\",\r\n    \"title\": \"Prove The Riemann Hypothesis\",\r\n    \"due\": \"2020-12-05T11:26:19+0000\",\r\n    \"points\": \"1\"\r\n  }",
+							"raw": "  {\r\n    \"courseId\": \"5ed8d947d3b79896da3daa16\",\r\n    \"title\": \"Prove The Riemann Hypothesis\",\r\n    \"due\": \"2020-12-05T11:26:19+0000\",\r\n    \"points\": \"1\"\r\n  }",
 							"options": {
 								"raw": {
 									"language": "json"
