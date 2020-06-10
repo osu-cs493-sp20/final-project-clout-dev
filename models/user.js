@@ -74,7 +74,7 @@ async function getUserById(id) {
 });
 */
   const results = await collection
-      .find({ "id": id })
+      .find({ _id: new ObjectId(id) })
       .toArray();
     return results[0];
 }
@@ -88,18 +88,18 @@ async function getStudentCourses(id) {
   {
     const results = await collection
       .find({"enrolled" : id}).toArray();
-    
+
     for(var i = 0; i < results.length; i++)
     {
       studentsClasses.push(results[i]._id);
-    }  
+    }
     return studentsClasses;
   }
   else
   {
     return null;
   }
-  
+
 }
 exports.getStudentCourses = getStudentCourses;
 
@@ -107,7 +107,7 @@ exports.getStudentCourses = getStudentCourses;
 async function getTaughtCourses(id) {
   const db = getDBReference();
 	const collection = db.collection('courses');
-  
+
   if(ObjectId.isValid(id))
   {
 		const results = await collection
