@@ -112,7 +112,7 @@ async function getCourseStudents(id) {
     }
     return students;
   }
-  else 
+  else
   {
     return null;
   }
@@ -123,17 +123,15 @@ exports.getCourseStudents = getCourseStudents;
 async function getCourseAssignments(id) {
   const db = getDBReference();
   const collection = db.collection('assignments');
-  if(ObjectId.isValid(id))
-  {
-    const results = await collection
-      .find({ _id: ObjectId(id) })
-      .toArray();
-    return results[0];
-  }
-  else 
-  {
-    return null;
-  }
+  const results = await collection
+    .find({ courseId: id })
+    .toArray();
+  var returnVal = [];
+  results.forEach(function (results) {
+    returnVal.push(results._id);
+  });
+  return returnVal;
+
 }
 exports.getCourseAssignments = getCourseAssignments;
 
@@ -189,7 +187,7 @@ async function enrollStudent(studentId, courseId) {
     );
     return courseId;
   }
-  else 
+  else
   {
     return null;
   }

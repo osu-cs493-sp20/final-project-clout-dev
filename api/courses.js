@@ -248,14 +248,14 @@ router.get('/:id/roster', requireAuthentication, async (req, res) => {
 
 router.get('/:id/assignments', async (req, res, next) => {
 
-  const course = getCourseDetailsById(req.params.id);
+  const course = await getCourseDetailsById(req.params.id);
   if(course) {
     try {
-      const assignments = getCourseAssignments(req.params.id);
+      const assignments = await getCourseAssignments(req.params.id);
       res.status(200).send(assignments);
     } catch (err) {
       res.status(500).send({
-        error: "Unable to update enrollment.  Please try again later."
+        error: "Unable to get assigments.  Please try again later."
       });
     }
   } else {
