@@ -180,7 +180,7 @@ async function enrollStudent(studentId, courseId) {
   {
     const result = await collection.updateOne(
 			{ "id": courseId },
-			{ $push: { "enrolled": { $each: studentId } } }	
+			{ $push: { "enrolled": { $each: studentId } } }
 		);
     return courseId;
   }
@@ -197,7 +197,7 @@ async function disenrollStudent(studentId, courseId) {
   if(ObjectId.isValid(courseId))
   {
     const result = await collection.updateOne(
-			{ "id": courseID },
+			{ "id": courseId },
 			{ $pull: { "enrolled": { $in: studentId } } }
 		);
     return courseId;
