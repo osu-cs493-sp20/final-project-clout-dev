@@ -82,8 +82,16 @@ exports.getUserById = getUserById;
 
 async function getStudentCourses(id) {
   const db = getDBReference();
-  const collection = db.collection('users');
-  
+  const collection = db.collection('courses');
+  const studentsClasses = [];
+  if(ObjectId.isValid(id))
+  {
+    
+  }
+  else
+  {
+    return null;
+  }
   
 }
 exports.getStudentCourses = getStudentCourses;

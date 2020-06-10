@@ -97,7 +97,7 @@ exports.deleteCourseById = deleteCourseById;
 //should return array of student ids
 async function getCourseStudents(id) {
   const db = getDBReference();
-  const collection = db.collection('users');
+  const collection = db.collection('courses');
   var students = [];
 
   if(ObjectId.isValid(id))
@@ -123,18 +123,12 @@ exports.getCourseStudents = getCourseStudents;
 async function getCourseAssignments(id) {
   const db = getDBReference();
   const collection = db.collection('assignments');
-  var assignments = [];
   if(ObjectId.isValid(id))
   {
-    const results = await collection.find({courseId: id}).project({_id: 1}).toArray();
-    if(results)
-    {
-      for(var i = 0; i < results.length; i++)
-      {
-        assignments.push(results[i]._id);
-      }
-    }
-    return assignments;
+    const results = await collection
+      .find({ _id: ObjectId(id) })
+      .toArray();
+    return results[0];
   }
   else 
   {
@@ -168,8 +162,8 @@ async function patchCourse(id, data) {
       const db = getDBReference();
       const collection = db.collection('courses');
       const result = await collection.updateOne(
-        { _id: new ObjectId(id) },
-        { $set : {"subject" : data.subject, "number" : data.number, "title" : data.title, "term" : data.term, "instructorId" : data.instructorId, "enrolled" : data.enrolled} }
+        {_id: new ObjectId(id)},
+        {$set : {"subject" : data.subject, "number" : data.number, "title" : data.title, "term" : data.term, "instructorId" : data.instructorId, "enrolled" : data.enrolled}}
       );
       return id;
     }
@@ -185,11 +179,37 @@ async function patchCourse(id, data) {
 exports.patchCourse = patchCourse;
 
 async function enrollStudent(studentId, courseId) {
-  const a = "write this function";
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  if(ObjectId.isValid(courseId) && ObjectId.isValid(studentId))
+  {
+    var result = await collection.updateOne(
+      {_id: new ObjectId(courseId)},
+      {$push: {enrolled: {$each: studentId}}}
+    );
+    return courseId;
+  }
+  else 
+  {
+    return null;
+  }
 }
 exports.enrollStudent = enrollStudent;
 
 async function disenrollStudent(studentId, courseId) {
-  const a = "write this function";
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  if(ObjectId.isValid(courseId))
+  {
+    var result = await collection.updateOne(
+      {_id: new ObjectId(courseId)},
+      {$pull: {enrolled: {$in: studentId}}},
+    );
+    return courseId;
+  }
+  else
+  {
+    return null;
+  }
 }
 exports.disenrollStudent = disenrollStudent;
