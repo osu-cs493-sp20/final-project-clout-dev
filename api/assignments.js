@@ -26,7 +26,7 @@ const {
 //either admin or instructor of course
 router.post('/', requireAuthentication, async (req, res) => {
 
-  const course = await getCourseDetailsById(req.body.courseId);
+  const course = await getCourseDetailsById(req.body.course);
   if(course) {
 
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
@@ -106,14 +106,14 @@ router.patch('/:id', requireAuthentication, async (req, res, next) => {
 });
 
 //either admin or instructor of course
-router.delete('/:id', requireAuthentication, async (req, res) => {
+router.delete('/:id', requireAuthentication, async (req, res, next) => {
 
   const course = await getCourseDetailsById(req.params.id);
   if(course) {
 
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
       try {
-        const deleteSuccessful = await deleteAssignmentById(parseInt(req.params.id));
+        const deleteSuccessful = await deleteAssignmentById(req.params.id);
         res.status(204).end();
       } catch (err) {
         console.error(err);

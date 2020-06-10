@@ -25,7 +25,7 @@ exports.SubmitSchema = SubmitSchema;
 async function insertNewAssignment(assignment) {
   const validatedAssign = extractValidFields(
     assignment,
-    exports.CourseSchema
+    exports.AssignmentSchema
   );
 
   const db = getDBReference();
