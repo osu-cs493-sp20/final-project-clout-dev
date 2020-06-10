@@ -102,14 +102,14 @@ async function getCourseStudents(id) {
 
   if(ObjectId.isValid(id))
   {
-    const results = await collection.find({enrollment: id}).project({_id: 1}).toArray();
-    if(results)
+    const results = await collection
+    .find({"enrolled": id}).toArray();
+
+    for(var i = 0; i < results.length; i++)
     {
-      for(var i = 0; i < results.length; i++)
-      {
-        students.push(results[i]._id);
-      }
+      students.push(results[i]._id);
     }
+
     return students;
   }
   else
@@ -178,10 +178,10 @@ async function enrollStudent(studentId, courseId) {
   const collection = db.collection('courses');
   if(ObjectId.isValid(courseId) && ObjectId.isValid(studentId))
   {
-    var result = await collection.updateOne(
-      {_id: new ObjectId(courseId)},
-      {$push: {enrolled: {$each: studentId}}}
-    );
+    const result = await collection.updateOne(
+			{ "id": courseId },
+			{ $push: { "enrolled": { $each: studentID } } }	
+		);
     return courseId;
   }
   else
@@ -196,10 +196,10 @@ async function disenrollStudent(studentId, courseId) {
   const collection = db.collection('courses');
   if(ObjectId.isValid(courseId))
   {
-    var result = await collection.updateOne(
-      {_id: new ObjectId(courseId)},
-      {$pull: {enrolled: {$in: studentId}}},
-    );
+    const result = await collection.updateOne(
+			{ "id": courseID },
+			{ $pull: { "enrolled": { $in: studentId } } }	
+		);
     return courseId;
   }
   else
