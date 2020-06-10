@@ -108,9 +108,10 @@ router.patch('/:id', requireAuthentication, async (req, res, next) => {
 //either admin or instructor of course
 router.delete('/:id', requireAuthentication, async (req, res, next) => {
 
-  const course = await getCourseDetailsById(req.params.id);
-  if(course) {
+  const assignment = await getAssignmentDetailsById(req.params.id);
+  if(assignment) {
 
+    const course = await getCourseDetailsById(assignment.courseId);
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
       try {
         const deleteSuccessful = await deleteAssignmentById(req.params.id);

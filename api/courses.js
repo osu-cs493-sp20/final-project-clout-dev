@@ -127,7 +127,7 @@ router.delete('/:id', requireAuthentication, async (req, res, next) => {
   if(req.role == 'admin') {
 
     try {
-      const deleteSuccessful = await deleteCourseById(parseInt(req.params.id));
+      const deleteSuccessful = await deleteCourseById(req.params.id);
       if (deleteSuccessful) {
         res.status(204).end();
       } else {
