@@ -87,7 +87,7 @@ async function getStudentCourses(id) {
   if(ObjectId.isValid(id))
   {
     const results = await collection
-      .find({"enrollment" : id}).toArray();
+      .find({"enrolled" : id}).toArray();
     
     for(var i = 0; i < results.length; i++)
     {
