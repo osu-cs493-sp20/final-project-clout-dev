@@ -4,6 +4,7 @@ const {
   insertNewUser,
   validateUser,
   UserSchema,
+  getUserById,
   getStudentCourses,
   getTaughtCourses
 } = require('../models/user');

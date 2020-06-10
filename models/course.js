@@ -153,15 +153,14 @@ exports.enrolled = enrolled;
 
 
 async function patchCourse(id, data) {
-  if(validateAgainstSchema(data, CourseSchema))
-  {
+
     if(ObjectId.isValid(id))
     {
       const db = getDBReference();
       const collection = db.collection('courses');
       const result = await collection.updateOne(
         {_id: new ObjectId(id)},
-        {$set : {"subject" : data.subject, "number" : data.number, "title" : data.title, "term" : data.term, "instructorId" : data.instructorId, "enrolled" : data.enrolled}}
+        {$set : {"subject" : data.subject, "number" : data.number, "title" : data.title, "term" : data.term, "instructorId" : data.instructor}}
       );
       return id;
     }
@@ -169,11 +168,9 @@ async function patchCourse(id, data) {
     {
       return null;
     }
-  }
-  else
-  {
-    return null;
-  }}
+
+
+}
 exports.patchCourse = patchCourse;
 
 async function enrollStudent(studentId, courseId) {

@@ -110,15 +110,14 @@ async function getSubmissionPage(assignmentId, page) {
 exports.getSubmissionPage = getSubmissionPage;
 
 async function patchAssignment(id, data) {
-  if(validateAgainstSchema(data, AssignmentSchema))
-  {
+
     if(ObjectId.isValid(id))
     {
       const db = getDBReference();
       const collection = db.collection('assignments');
       const result = await collection.updateOne(
         { _id: new ObjectId(id) },
-        { $set : {"courseId" : data.courseId, "title" : data.title, "due" : data.due, "points" : data.points} }
+        { $set : {"title" : data.title, "due" : data.due, "points" : data.points} }
       );
       return id;
     }
@@ -126,11 +125,7 @@ async function patchAssignment(id, data) {
     {
       return null;
     }
-  }
-  else
-  {
-    return null;
-  }
+
 }
 exports.patchAssignment = patchAssignment;
 
