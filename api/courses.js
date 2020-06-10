@@ -186,26 +186,26 @@ router.post('/:id/students', requireAuthentication, async (req, res, next) => {
   if(course) {
 
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
-        try {
+      try {
 
-          //add and remove enrollments one at a time
-          if(req.body.add) {
-            req.body.add.forEach(async function(add) {
-              await enrollStudent(add, req.params.id);
-            });
-          }
-          if(req.body.remove) {
-            req.body.remove.forEach(async function(remove) {
-              await disenrollStudent(remove, req.params.id);
-            });
-          }
-          res.status(200).end();
-        } catch (err) {
-          console.error(err);
-          res.status(500).send({
-            error: "Unable to update enrollment.  Please try again later."
+        //add and remove enrollments one at a time
+        if(req.body.add) {
+          req.body.add.forEach(async function(add) {
+            await enrollStudent(req.body.add, req.params.id);
           });
         }
+        if(req.body.remove) {
+          req.body.remove.forEach(async function(remove) {
+            await disenrollStudent(req.body.remove, req.params.id);
+          });
+        }
+        res.status(200).end();
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({
+          error: "Unable to update enrollment.  Please try again later."
+        });
+      }
     } else {
       res.status(403).send({error: "must be admin or course instructor"});
     }

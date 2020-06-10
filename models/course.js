@@ -174,35 +174,23 @@ exports.patchCourse = patchCourse;
 async function enrollStudent(studentId, courseId) {
   const db = getDBReference();
   const collection = db.collection('courses');
-  if(ObjectId.isValid(courseId) && ObjectId.isValid(studentId))
-  {
     const result = await collection.updateOne(
-			{ "id": courseId },
-			{ $push: { "enrolled": { $each: studentId } } }
-		);
-    return courseId;
-  }
-  else
-  {
-    return null;
-  }
+			{ _id: new ObjectId(courseId) },
+			{ $push: { enrolled : { $each: studentId } } }
+    );
+    //console.log(collection.enrolled);
+    return collection.enrolled;
 }
 exports.enrollStudent = enrollStudent;
 
 async function disenrollStudent(studentId, courseId) {
   const db = getDBReference();
   const collection = db.collection('courses');
-  if(ObjectId.isValid(courseId))
-  {
     const result = await collection.updateOne(
-			{ "id": courseId },
-			{ $pull: { "enrolled": { $in: studentId } } }
-		);
+			{ _id: new ObjectId(courseId) },
+			{ $pull: { enrolled: { $in: studentId } } }
+    );
+    //console.log(collection.enrolled);
     return courseId;
-  }
-  else
-  {
-    return null;
-  }
 }
 exports.disenrollStudent = disenrollStudent;
