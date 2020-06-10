@@ -107,17 +107,19 @@ exports.getStudentCourses = getStudentCourses;
 async function getTaughtCourses(id) {
   const db = getDBReference();
 	const collection = db.collection('courses');
+  const taughtCourses = [];
 
-  if(ObjectId.isValid(id))
-  {
 		const results = await collection
 			.find({instructorId: id})
 			.toArray();
-		return results;
-  }
-  else
-  {
-    return null;
-  }
+
+    console.log("results in get teach courses", results)
+    for(var i = 0; i < results.length; i++)
+    {
+      taughtCourses.push(results[i]._id);
+    }
+    return taughtCourses;
+
+
 }
 exports.getTaughtCourses = getTaughtCourses;

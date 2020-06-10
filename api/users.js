@@ -78,7 +78,7 @@ router.get('/:id', requireAuthentication, async (req, res, next) => {
         if(req.role =='student') {
           const enrolledCourses = await getStudentCourses(req.params.id);
           user.courses = enrolledCourses;
-        } else if (req.role == 'teacher') {
+        } else if (req.role == 'instructor') {
           const taughtCourses = await getTaughtCourses(req.params.id);
           user.courses = taughtCourses;
         }

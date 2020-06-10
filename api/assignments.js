@@ -26,7 +26,7 @@ const {
 //either admin or instructor of course
 router.post('/', requireAuthentication, async (req, res) => {
 
-  const course = await getCourseDetailsById(req.body.course);
+  const course = await getCourseDetailsById(req.body.courseId);
   if(course) {
 
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
