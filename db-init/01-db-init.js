@@ -66,7 +66,7 @@ db.courses.insertMany([
     "enrolled": ["5ed87e0779fae4e5d30dd812"]
   }
 ])
-db.assignments.createIndex( { course: 1 , name: 1}, { unique: true, sparse: true } )
+db.assignments.createIndex( { course: 1 , title: 1}, { unique: true, sparse: true } )
 db.assignments.insertMany([
   {
     "_id": ObjectId("5edf0e17ab913d59a01c3734"),
