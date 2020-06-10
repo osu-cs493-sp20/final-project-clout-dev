@@ -81,12 +81,28 @@ async function getUserById(id) {
 exports.getUserById = getUserById;
 
 async function getStudentCourses(id) {
-  const a = "write me plz";
+  const db = getDBReference();
+  const collection = db.collection('users');
+  
+  
 }
 exports.getStudentCourses = getStudentCourses;
 
 
 async function getTaughtCourses(id) {
-  const a = "write me plz";
+  const db = getDBReference();
+	const collection = db.collection('courses');
+  
+  if(ObjectId.isValid(id))
+  {
+		const results = await collection
+			.find({instructorId: id})
+			.toArray();
+		return results;
+  }
+  else
+  {
+    return null;
+  }
 }
 exports.getTaughtCourses = getTaughtCourses;

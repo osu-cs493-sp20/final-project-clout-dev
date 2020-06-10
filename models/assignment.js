@@ -23,7 +23,16 @@ exports.SubmitSchema = SubmitSchema;
 
 //should return id of inserted course
 async function insertNewAssignment(assignment) {
-  const a = "write this function";
+  const validatedAssign = extractValidFields(
+    assignment,
+    exports.CourseSchema
+  );
+
+  const db = getDBReference();
+  const collection = db.collection('assignments');
+  const result = await collection.insertOne(validatedAssign);
+
+  return result.insertedId;
 }
 exports.insertNewAssignment = insertNewAssignment;
 
@@ -46,7 +55,13 @@ exports.getAssignmentDetailsById = getAssignmentDetailsById;
 
 
 async function deleteAssignmentById(id) {
-  const a = "write this function";
+  const db = getDBReference();
+  const collection = db.collection('assignments');
+  const result = await collection.deleteOne({
+    _id: new ObjectId(id)
+  });
+
+  return result.deletedCount > 0;
 }
 exports.deleteAssignmentById = deleteAssignmentById;
 
@@ -95,7 +110,27 @@ async function getSubmissionPage(assignmentId, page) {
 exports.getSubmissionPage = getSubmissionPage;
 
 async function patchAssignment(id, data) {
-  const a = "write this function";
+  if(validateAgainstSchema(data, AssignmentSchema))
+  {
+    if(ObjectId.isValid(id))
+    {
+      const db = getDBReference();
+      const collection = db.collection('assignments');
+      const result = await collection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set : {"courseId" : data.courseId, "title" : data.title, "due" : data.due, "points" : data.points} }
+      );
+      return id;
+    }
+    else
+    {
+      return null;
+    }
+  }
+  else
+  {
+    return null;
+  }
 }
 exports.patchAssignment = patchAssignment;
 

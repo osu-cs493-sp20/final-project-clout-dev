@@ -52,7 +52,16 @@ exports.getCoursePage = getCoursePage;
 
 //should return id of inserted course
 async function insertNewCourse(course) {
-  const a = "write this function";
+  const validatedCourse = extractValidFields(
+    course,
+    exports.CourseSchema
+  );
+
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  const result = await collection.insertOne(validatedCourse);
+
+  return result.insertedId;
 }
 exports.insertNewCourse = insertNewCourse;
 
@@ -75,19 +84,62 @@ exports.getCourseDetailsById = getCourseDetailsById;
 
 
 async function deleteCourseById(id) {
-  const a = "write this function";
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  const result = await collection.deleteOne({
+    _id: new ObjectId(id)
+  });
+
+  return result.deletedCount > 0;
 }
 exports.deleteCourseById = deleteCourseById;
 
 //should return array of student ids
 async function getCourseStudents(id) {
-  const a = "write this function";
+  const db = getDBReference();
+  const collection = db.collection('users');
+  var students = [];
+
+  if(ObjectId.isValid(id))
+  {
+    const results = await collection.find({enrollment: id}).project({_id: 1}).toArray();
+    if(results)
+    {
+      for(var i = 0; i < results.length; i++)
+      {
+        students.push(results[i]._id);
+      }
+    }
+    return students;
+  }
+  else 
+  {
+    return null;
+  }
 }
 exports.getCourseStudents = getCourseStudents;
 
 
 async function getCourseAssignments(id) {
-  const a = "write this function";
+  const db = getDBReference();
+  const collection = db.collection('assignments');
+  var assignments = [];
+  if(ObjectId.isValid(id))
+  {
+    const results = await collection.find({courseId: id}).project({_id: 1}).toArray();
+    if(results)
+    {
+      for(var i = 0; i < results.length; i++)
+      {
+        assignments.push(results[i]._id);
+      }
+    }
+    return assignments;
+  }
+  else 
+  {
+    return null;
+  }
 }
 exports.getCourseAssignments = getCourseAssignments;
 
@@ -109,8 +161,27 @@ exports.enrolled = enrolled;
 
 
 async function patchCourse(id, data) {
-  const a = "write this function";
-}
+  if(validateAgainstSchema(data, CourseSchema))
+  {
+    if(ObjectId.isValid(id))
+    {
+      const db = getDBReference();
+      const collection = db.collection('courses');
+      const result = await collection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set : {"subject" : data.subject, "number" : data.number, "title" : data.title, "term" : data.term, "instructorId" : data.instructorId, "enrolled" : data.enrolled} }
+      );
+      return id;
+    }
+    else
+    {
+      return null;
+    }
+  }
+  else
+  {
+    return null;
+  }}
 exports.patchCourse = patchCourse;
 
 async function enrollStudent(studentId, courseId) {
