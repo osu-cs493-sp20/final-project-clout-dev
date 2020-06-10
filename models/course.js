@@ -103,14 +103,12 @@ async function getCourseStudents(id) {
   if(ObjectId.isValid(id))
   {
     const results = await collection
-    .find({"enrolled": id}).toArray();
+    .find({_id: new ObjectId(id)}).toArray();
 
-    for(var i = 0; i < results.length; i++)
-    {
-      students.push(results[i]._id);
-    }
+    console.log("results: ", results);
+    console.log("results.enrolled: ", results[0].enrolled);
 
-    return students;
+    return results[0].enrolled;
   }
   else
   {
@@ -180,7 +178,7 @@ async function enrollStudent(studentId, courseId) {
   {
     const result = await collection.updateOne(
 			{ "id": courseId },
-			{ $push: { "enrolled": { $each: studentId } } }	
+			{ $push: { "enrolled": { $each: studentId } } }
 		);
     return courseId;
   }

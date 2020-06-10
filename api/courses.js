@@ -14,6 +14,10 @@ const {
   disenrollStudent
 } = require('../models/course');
 
+const{
+  getUserById
+} = require('../models/user');
+
 router.get('/', async (req, res) => {
 
   try {
@@ -221,14 +225,22 @@ router.get('/:id/roster', requireAuthentication, async (req, res) => {
     if((course.instructorId == req.user && req.role == 'instructor') || (req.role == 'admin') ) {
         try {
           const students = await getCourseStudents(req.params.id);
+          console.log("STUDENTS: ", students);
 
-          var response = "";
-          students.forEach( async function(students) {
-            thisStudent = await getUserById(students);
-            response += thisStudent._id + ", " + thisStudent.name + ", " + thisStudent.email + "\n";
+          var response = [];
+          for(const student of students) {
+            thisStudent = await getUserById(student);
+            console.log(thisStudent);
+            response.push([thisStudent._id, thisStudent.name, thisStudent.email]);
+          };
+          console.log(response);
+          let csvContent = "";
+          response.forEach(function(rowArray) {
+            let row = rowArray.join(",");
+            csvContent += row + "\r\n";
           });
-
-          res.status(200).send(response);
+          res.set('Content-Type', 'text/csv');
+          res.status(200).send(csvContent);
 
         } catch (err) {
           console.error(err);
